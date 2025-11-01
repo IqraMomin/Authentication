@@ -4,44 +4,76 @@ import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
-  const formSubmitHandler = async (event)=>{
+  const formSubmitHandler = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    console.log(isLoading);
     const userDetails = {
-      email:emailRef.current.value,
-      password:passwordRef.current.value,
-      returnSecureToken:"true"
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      returnSecureToken: true
     }
-    try{
-   const response =  await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=[AIzaSyAPItEdIRymlHllXc5EWozfIIUZ3q4TTOY]",
-    {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(userDetails),
-      
-    })
-    if(!response.ok){
-      throw new Error("User Exists");
-    }
-    const data =await response.json()
-    console.log(data);
-    setIsLoading(false);
-    emailRef.current.value="";
-    passwordRef.current.value="";
-  }catch(err){
-    alert(err);
-  }
+    if (isLogin) {
+      try{
+        const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAPItEdIRymlHllXc5EWozfIIUZ3q4TTOY",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(userDetails)
+        })
+        setIsLoading(false);
+        const data = await response.json();
+        if(response.ok){
+          console.log(data.idToken);
 
+        }else{
+          let errorMessage = "Authentication Failed";
+          if(data && data.error && data.error.message){
+            errorMessage = data.error.message;
+          }
+          alert(errorMessage);
+        }
+
+      }catch(err){
+        console.log(err);
+      }
+
+    } else {
+      try {
+        const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAPItEdIRymlHllXc5EWozfIIUZ3q4TTOY",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userDetails),
+
+          })
+          setIsLoading(false);
+          if(response.ok){
+
+          }else{
+            const data = await response.json();
+            let errorMessage = "Authentication Failed";
+            if(data && data.error && data.error.message){
+              errorMessage = data.error.message;
+              alert(errorMessage);
+            }
+          }
+        
+        emailRef.current.value = "";
+        passwordRef.current.value = "";
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
   return (
     <section className={classes.auth}>
@@ -49,7 +81,7 @@ const AuthForm = () => {
       <form onSubmit={formSubmitHandler}>
         <div className={classes.control}>
           <label htmlFor='email'>Your Email</label>
-          <input type='email' id='email' required ref={emailRef}/>
+          <input type='email' id='email' required ref={emailRef} />
         </div>
         <div className={classes.control}>
           <label htmlFor='password'>Your Password</label>
@@ -61,16 +93,15 @@ const AuthForm = () => {
           />
         </div>
         <div className={classes.actions}>
-          {isLoading && <p style={{color:"pink",fontWeight:"bold"}}>Sending Request...</p>}
-          {!isLoading &&
+          {isLoading && <p>Sending Request...</p>}
+          {!isLoading && <button>{isLogin ? "Login" : "Create Account"}</button>}
           <button
-            type='submit'
+            type='button'
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
             {isLogin ? 'Create new account' : 'Login with existing account'}
           </button>
-}
         </div>
       </form>
     </section>
