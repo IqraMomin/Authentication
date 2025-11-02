@@ -4,11 +4,13 @@ import Layout from './components/Layout/Layout';
 import UserProfile from './components/Profile/UserProfile';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
-import { LoginProvider } from './store/login-context';
+import LoginContext from './store/login-context';
+import { useContext } from 'react';
+import { Redirect } from 'react-router-dom';
 
 function App() {
+  const loginCtx= useContext(LoginContext);
   return (
-    <LoginProvider>
     <Layout>
       <Switch>
         <Route path='/' exact>
@@ -18,11 +20,13 @@ function App() {
           <AuthPage />
         </Route>
         <Route path='/profile'>
-          <UserProfile />
+          {loginCtx.isLoggedIn && <UserProfile />}
+          {!loginCtx.isLoggedIn && <Redirect to="/auth"/>}
+          
         </Route>
+        <Route path="*"><Redirect to="/"/></Route>
       </Switch>
     </Layout>
-    </LoginProvider>
   );
 }
 
