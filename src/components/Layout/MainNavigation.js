@@ -7,6 +7,10 @@ import { useContext } from 'react';
 const MainNavigation = () => {
   const loginCtx = useContext(LoginContext);
   const isLoggedIn= loginCtx.isLoggedIn;
+
+  const logoutHandler = ()=>{
+    loginCtx.logout();
+  }
   return (
     <header className={classes.header}>
       <Link to='/'>
@@ -21,7 +25,7 @@ const MainNavigation = () => {
             {isLoggedIn && <Link to='/profile'>Profile</Link>}
           </li>
           <li>
-           {isLoggedIn && <button>Logout</button>}
+           {isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
           </li>
         </ul>
       </nav>

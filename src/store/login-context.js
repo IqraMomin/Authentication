@@ -16,11 +16,13 @@ export const LoginProvider = (props)=>{
         setToken(token);
     }
     const logoutHandler = ()=>{
+        setToken(null);
 
     }
 
     const contextValue = {
         token:token,
+        isLoggedIn:isLoggedIn,
         login:loginHandler,
         logout:logoutHandler
     }
