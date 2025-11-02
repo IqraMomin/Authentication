@@ -1,11 +1,39 @@
+import { useContext, useRef } from 'react';
 import classes from './ProfileForm.module.css';
+import LoginContext from '../../store/login-context';
 
 const ProfileForm = () => {
+  const passwordInputRef = useRef();
+  const loginCtx = useContext(LoginContext);
+
+  const formSubmitHandler = async (event)=>{
+    event.preventDefault();
+    const updatedData = {
+      idToken:loginCtx.token,
+      password:passwordInputRef.current.value,
+      returnSecureToken:true
+    }
+    try{
+      const response =await fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyAPItEdIRymlHllXc5EWozfIIUZ3q4TTOY",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(updatedData)
+      })
+      const data = await response.json()
+      console.log(data);
+
+    }catch(err){
+      console.log(err);
+    }
+
+  }
   return (
-    <form className={classes.form}>
+    <form onSubmit={formSubmitHandler} className={classes.form}>
       <div className={classes.control}>
         <label htmlFor='new-password'>New Password</label>
-        <input type='password' id='new-password' />
+        <input type='password' id='new-password' ref={passwordInputRef}/>
       </div>
       <div className={classes.action}>
         <button>Change Password</button>
