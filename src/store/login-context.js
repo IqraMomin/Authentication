@@ -18,6 +18,10 @@ export const LoginProvider = (props)=>{
     const isLoggedIn = !!token;
 
     const loginHandler = (token)=>{
+        setTimeout(()=>{
+            localStorage.removeItem("idToken");
+            setToken(null);
+        },5000)
         localStorage.setItem("idToken",JSON.stringify(token));
         setToken(token);
     }
