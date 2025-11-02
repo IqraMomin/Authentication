@@ -1,10 +1,12 @@
 import { useContext, useRef } from 'react';
 import classes from './ProfileForm.module.css';
 import LoginContext from '../../store/login-context';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const ProfileForm = () => {
   const passwordInputRef = useRef();
   const loginCtx = useContext(LoginContext);
+  const history=useHistory();
 
   const formSubmitHandler = async (event)=>{
     event.preventDefault();
@@ -21,8 +23,9 @@ const ProfileForm = () => {
         },
         body:JSON.stringify(updatedData)
       })
-      const data = await response.json()
-      console.log(data);
+      const data = await response.json();
+      history.replace("/");
+      
 
     }catch(err){
       console.log(err);

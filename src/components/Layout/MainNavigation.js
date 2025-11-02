@@ -3,13 +3,17 @@ import { Link } from 'react-router-dom';
 import classes from './MainNavigation.module.css';
 import LoginContext from '../../store/login-context';
 import { useContext } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const MainNavigation = () => {
   const loginCtx = useContext(LoginContext);
   const isLoggedIn= loginCtx.isLoggedIn;
+  const history = useHistory();
 
   const logoutHandler = ()=>{
     loginCtx.logout();
+    history.replace("/auth");
+
   }
   return (
     <header className={classes.header}>
