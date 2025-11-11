@@ -58,7 +58,7 @@ const AuthForm = () => {
           {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "applicatiion/json"
             },
             body: JSON.stringify(userDetails),
 
